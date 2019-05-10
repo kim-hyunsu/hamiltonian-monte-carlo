@@ -276,18 +276,20 @@ class RotationalLeapfrogIntegrator(object):
         self.step_size = step_size
         self.eigenvalues = eigenvalues
         self.mean = mean
+        n_dim = len(eigenvalues)
+        A = np.zeros((n_dim, n_dim))
+        for i, h in enumerate(zip(self.eigenvalues, self.eigenvalues[::-1])):
+            h_i, h_j = h
+            A[i][n_dim-i-1] = ( h_j / h_i )**0.5
+        b = (np.identity(n_dim) - A) @ self.mean
+        self.A = A
+        self.b = b
 
-    def step(self, state):
+    def step(self, state, nth_step):
         dt = state.dir * self.step_size
         state = state.copy()
-        n_dim = len(state.pos)
-        if np.random.uniform() < 0.001:  # time reversible?
-            A = np.zeros((n_dim, n_dim))
-            for i, h in enumerate(zip(self.eigenvalues, self.eigenvalues[::-1])):
-                h_i, h_j = h
-                A[i][n_dim-i-1] = ( h_j / h_i )**2
-            b = (np.identity(n_dim) - A) @ self.mean
-            state.pos = A @ state.pos + b            
+        if nth_step < 1:
+            state.pos = self.A @ state.pos + self.b
         else:
             state.mom -= 0.5 * dt * self.system.dh_dpos(state)
             state.pos += dt * self.system.dh_dmom(state)

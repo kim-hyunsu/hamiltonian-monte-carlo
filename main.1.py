@@ -27,19 +27,18 @@ system = hmc.systems.EuclideanMetricSystem(pot_energy)
 # system = hmc.systems.EuclideanMetricSystem(pot_energy, metric)
 
 # Hamiltonian is separable therefore use explicit leapfrog integrator
-# integrator = hmc.integrators.LeapfrogIntegrator(system, step_size=0.15)
+integrator = hmc.integrators.LeapfrogIntegrator(system, step_size=0.15)
 
 # Potential is based on Gaussian
-integrator = hmc.integrators.RotationalLeapfrogIntegrator(
-    system, step_size=0.15, eigenvalues=w, mean=mean)
+# integrator = hmc.integrators.RotationalLeapfrogIntegrator(
+#     system, step_size=0.15, eigenvalues=w, mean=mean)
 
 # Use dynamic integration-time HMC implementation with multinomial 
 # sampling from trajectories
 # sampler = hmc.samplers.DynamicMultinomialHMC(system, integrator, rng)
 
 # Standard HMC
-sampler = hmc.samplers.StaticMetropolisHMCForRotationalLeapfrog(
-    system, integrator, rng, n_step=10)
+sampler = hmc.samplers.StaticMetropolisHMC(system, integrator, rng, n_step=10)
 
 # Sample an initial position from zero-mean isotropic Gaussian
 init_pos = rng.normal(size=n_dim)
@@ -55,8 +54,8 @@ chains, chain_stats = sampler.sample_chain(10000, init_pos)
 # print(chain_stats['hamiltonian'])
 # print("-------------------N STEP-------------------")
 # print(chain_stats['n_step'])
-print("-----------ACCEPTANCE PROBABILITY-----------")
-print(chain_stats['accept_prob'])
+# print("-----------ACCEPTANCE PROBABILITY-----------")
+# print(chain_stats['accept_prob'])
 # print("-------------NON-REVERSIBLE STEP-------------")
 # print(chain_stats['non_reversible_step'])
 # print("--------------CONVERGENCE ERROR--------------")
