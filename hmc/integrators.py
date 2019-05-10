@@ -263,3 +263,28 @@ class SplitConstrainedLeapfrogIntegrator(BaseConstrainedLeapfrogIntegrator):
     def solve_for_mom_post_projection(self, state, state_prev, dt):
         state.mom = self.system.solve_h2_flow_for_mom_gvn_pos(
             state.pos, state_prev.pos, dt)
+
+
+class RotationalLeapfrogIntegrator(object):
+    """
+    Leapfrog integrator with rotational jump for Gaussian or Gaussian-estimated
+    potential system.
+    """
+
+    def __init__(self, system, step_size, n_dim):
+        self.system = system
+        self.step_size = step_size
+        self.n_dim = n_dim
+
+    def step(self, state):
+        dt = state.dir * self.step_size
+        state = state.copy()
+        if np.random.uniform() < 0.1:  # time reversible?
+            # Pick two coordinates
+            # Rotation
+        else:
+            state.mom -= 0.5 * dt * self.system.dh_dpos(state)
+            state.pos += dt * self.system.dh_dmom(state)
+            state.mom -= 0.5 * dt * self.system.dh_dpos(state)
+
+        return state
