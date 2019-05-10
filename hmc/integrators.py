@@ -271,17 +271,23 @@ class RotationalLeapfrogIntegrator(object):
     potential system.
     """
 
-    def __init__(self, system, step_size, n_dim):
+    def __init__(self, system, step_size, eigenvalues, mean):
         self.system = system
         self.step_size = step_size
-        self.n_dim = n_dim
+        self.eigenvalues = eigenvalues
+        self.mean = mean
 
     def step(self, state):
         dt = state.dir * self.step_size
         state = state.copy()
-        if np.random.uniform() < 0.1:  # time reversible?
-            # Pick two coordinates
-            # Rotation
+        n_dim = len(state.pos)
+        if np.random.uniform() < 0.001:  # time reversible?
+            A = np.zeros((n_dim, n_dim))
+            for i, h in enumerate(zip(self.eigenvalues, self.eigenvalues[::-1])):
+                h_i, h_j = h
+                A[i][n_dim-i-1] = ( h_j / h_i )**2
+            b = (np.identity(n_dim) - A) @ self.mean
+            state.pos = A @ state.pos + b            
         else:
             state.mom -= 0.5 * dt * self.system.dh_dpos(state)
             state.pos += dt * self.system.dh_dmom(state)
