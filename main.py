@@ -9,6 +9,10 @@ rnd_eigval = np.exp(rng.normal(size=n_dim) * 2)
 prec = (rnd_eigvec / rnd_eigval) @ rnd_eigvec.T
 mean = rng.normal(size=n_dim)
 
+# Eigenvalue decomposition
+w, v = np.linalg.eig(prec)
+prec = np.diagflat(prec)
+
 # Deine potential energy (negative log density) for the Gaussian target
 # distribution (gradient will be automatically calculated using autograd)
 def pot_energy(pos):
@@ -18,6 +22,7 @@ def pot_energy(pos):
 # Specify Hamiltonian system with isotropic Gaussian kinetic energy
 # system = hmc.systems.EuclideanMetricSystem(pot_energy)
 
+# H = 0.5 * mom @ inv(prec) @ mom + 0.5 * pos_minus_mean @ prec @ pos_minus_mean
 metric = hmc.metrics.DenseEuclideanMetric(prec)
 system = hmc.systems.EuclideanMetricSystem(pot_energy, metric)
 
@@ -26,7 +31,10 @@ integrator = hmc.integrators.LeapfrogIntegrator(system, step_size=0.15)
 
 # Use dynamic integration-time HMC implementation with multinomial 
 # sampling from trajectories
-sampler = hmc.samplers.DynamicMultinomialHMC(system, integrator, rng)
+# sampler = hmc.samplers.DynamicMultinomialHMC(system, integrator, rng)
+
+# Standard HMC
+sampler = hmc.samplers.StaticMetropolisHMC(system, integrator, rng, n_step=10)
 
 # Sample an initial position from zero-mean isotropic Gaussian
 init_pos = rng.normal(size=n_dim)
