@@ -27,7 +27,7 @@ system = hmc.systems.EuclideanMetricSystem(pot_energy)
 # system = hmc.systems.EuclideanMetricSystem(pot_energy, metric)
 
 # Hamiltonian is separable therefore use explicit leapfrog integrator
-integrator = hmc.integrators.LeapfrogIntegrator(system, step_size=0.15)
+integrator = hmc.integrators.LeapfrogIntegrator(system, step_size=0.05)
 
 # Potential is based on Gaussian
 # integrator = hmc.integrators.RotationalLeapfrogIntegrator(
@@ -47,7 +47,7 @@ init_pos = rng.normal(size=n_dim)
 # chains, chain_stats = sampler.sample_chain(1000, init_pos)
 
 # for test
-chains, chain_stats = sampler.sample_chain(10000, init_pos)
+chains, chain_stats = sampler.sample_chain(1000, init_pos)
 # print("------------------POSITION------------------")
 # print(chains['pos'])
 # print("-----------------HAMILTONIAN----------------")

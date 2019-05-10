@@ -31,7 +31,7 @@ system = hmc.systems.EuclideanMetricSystem(pot_energy)
 
 # Potential is based on Gaussian
 integrator = hmc.integrators.RotationalLeapfrogIntegrator(
-    system, step_size=0.15, eigenvalues=w, mean=mean)
+    system, step_size=0.05, eigenvalues=w, mean=mean)
 
 # Use dynamic integration-time HMC implementation with multinomial 
 # sampling from trajectories
@@ -48,7 +48,7 @@ init_pos = rng.normal(size=n_dim)
 # chains, chain_stats = sampler.sample_chain(1000, init_pos)
 
 # for test
-chains, chain_stats = sampler.sample_chain(10000, init_pos)
+chains, chain_stats = sampler.sample_chain(1000, init_pos)
 # print("------------------POSITION------------------")
 # print(chains['pos'])
 # print("-----------------HAMILTONIAN----------------")
